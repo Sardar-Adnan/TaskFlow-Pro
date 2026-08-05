@@ -1,0 +1,39 @@
+# Documentation / Planning files
+*.md
+
+# Python / Django
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+db.sqlite3
+*.log
+.env
+venv/
+env/
+.venv/
+
+# Node / React
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Misc
+*.zip
