@@ -9,6 +9,16 @@ import PMDashboard from './pages/manager/PMDashboard';
 import MemberDashboard from './pages/member/MemberDashboard';
 import NotFoundPage from './components/NotFoundPage';
 
+import UserManagement from './pages/admin/UserManagement';
+import ProjectManagement from './pages/admin/ProjectManagement';
+import ProjectDetail from './pages/admin/ProjectDetail';
+
+import PMProjects from './pages/manager/PMProjects';
+import PMProjectDetail from './pages/manager/PMProjectDetail';
+import PMTasks from './pages/manager/PMTasks';
+
+import MemberTasks from './pages/member/MemberTasks';
+
 // Placeholder components
 const PlaceholderPage = ({ title }) => (
   <div className="flex items-center justify-center h-full min-h-[400px]">
@@ -29,21 +39,23 @@ const AppRoutes = () => {
       {/* Protected Admin Routes */}
       <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><DashboardLayout /></ProtectedRoute>}>
         <Route index element={<AdminDashboard />} />
-        <Route path="users" element={<PlaceholderPage title="Users Management" />} />
-        <Route path="projects" element={<PlaceholderPage title="All Projects" />} />
+        <Route path="users" element={<UserManagement />} />
+        <Route path="projects" element={<ProjectManagement />} />
+        <Route path="projects/:id" element={<ProjectDetail />} />
       </Route>
 
       {/* Protected PM Routes */}
       <Route path="/manager" element={<ProtectedRoute allowedRoles={['pm']}><DashboardLayout /></ProtectedRoute>}>
         <Route index element={<PMDashboard />} />
-        <Route path="projects" element={<PlaceholderPage title="My Projects" />} />
-        <Route path="tasks" element={<PlaceholderPage title="Project Tasks" />} />
+        <Route path="projects" element={<PMProjects />} />
+        <Route path="projects/:id" element={<PMProjectDetail />} />
+        <Route path="tasks" element={<PMTasks />} />
       </Route>
 
       {/* Protected Member Routes */}
       <Route path="/member" element={<ProtectedRoute allowedRoles={['member']}><DashboardLayout /></ProtectedRoute>}>
         <Route index element={<MemberDashboard />} />
-        <Route path="tasks" element={<PlaceholderPage title="My Tasks" />} />
+        <Route path="tasks" element={<MemberTasks />} />
       </Route>
 
       {/* Shared Protected Routes under a separate layout or within dashboards? */}

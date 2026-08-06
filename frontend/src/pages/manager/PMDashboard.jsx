@@ -1,22 +1,46 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { dashboardAPI, projectsAPI } from '../../services/api';
 import StatCard from '../../components/StatCard';
+import StatusBadge from '../../components/StatusBadge';
 import { Briefcase, ListTodo, Clock, CheckCircle } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const PMDashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const [statsData, setStatsData] = useState(null);
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const [statsRes, projectsRes] = await Promise.all([
+          dashboardAPI.getStats(),
+          projectsAPI.getAll()
+        ]);
+        setStatsData(statsRes.data);
+        setProjects(projectsRes.data);
+      } catch (err) {
+        toast.error('Failed to load dashboard data');
+      }
+    };
+    fetchDashboardData();
+  }, []);
 
   const stats = [
-    { title: 'My Projects', value: '—', icon: Briefcase, colorClass: 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400' },
-    { title: 'Total Tasks', value: '—', icon: ListTodo, colorClass: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' },
-    { title: 'Pending Tasks', value: '—', icon: Clock, colorClass: 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400' },
-    { title: 'Completed Tasks', value: '—', icon: CheckCircle, colorClass: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400' },
+    { title: 'My Projects', value: statsData?.total_projects || '—', icon: Briefcase, colorClass: 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400' },
+    { title: 'Total Tasks', value: (statsData?.active_tasks || 0) + (statsData?.completed_tasks || 0) || '—', icon: ListTodo, colorClass: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' },
+    { title: 'Pending Tasks', value: statsData?.active_tasks || '—', icon: Clock, colorClass: 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400' },
+    { title: 'Completed Tasks', value: statsData?.completed_tasks || '—', icon: CheckCircle, colorClass: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400' },
   ];
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-surface-900 dark:text-white">Project Manager Dashboard</h1>
-        <p className="text-surface-500 dark:text-surface-400">Welcome back, {user?.name}</p>
+        <p className="text-surface-500 dark:text-surface-400">Welcome back, {user?.username || user?.name}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -27,9 +51,41 @@ const PMDashboard = () => {
 
       <div className="bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800 p-6 min-h-[400px]">
         <h2 className="text-lg font-semibold text-surface-900 dark:text-white mb-4">My Projects</h2>
-        <div className="flex items-center justify-center h-64 text-surface-400 border-2 border-dashed border-surface-200 dark:border-surface-800 rounded-lg">
-          No projects found. Create a project to get started.
-        </div>
+        {projects.length === 0 ? (
+          <div className="flex items-center justify-center h-64 text-surface-400 border-2 border-dashed border-surface-200 dark:border-surface-800 rounded-lg">
+            No projects found. You are not assigned to any projects yet.
+          </div>
+        ) : (
+          <div className="overflow-x-auto border border-surface-200 dark:border-surface-800 rounded-lg">
+            <table className="w-full text-left text-sm">
+              <thead className="bg-surface-50 dark:bg-surface-800/50 text-surface-500 dark:text-surface-400 uppercase text-xs">
+                <tr>
+                  <th className="px-4 py-3">Project Name</th>
+                  <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3">Priority</th>
+                  <th className="px-4 py-3">Progress</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-surface-200 dark:divide-surface-800">
+                {projects.map((project) => (
+                  <tr key={project.id} onClick={() => navigate(`/manager/projects/${project.id}`)} className="cursor-pointer hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-colors">
+                    <td className="px-4 py-3 font-medium text-surface-900 dark:text-white">{project.name}</td>
+                    <td className="px-4 py-3"><StatusBadge type="status" value={project.status} /></td>
+                    <td className="px-4 py-3"><StatusBadge type="priority" value={project.priority} /></td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-full bg-surface-200 dark:bg-surface-700 rounded-full h-1.5 max-w-[100px]">
+                          <div className="bg-primary-500 h-1.5 rounded-full" style={{ width: `${project.total_tasks > 0 ? ((project.completed_tasks || 0) / project.total_tasks) * 100 : 0}%` }}></div>
+                        </div>
+                        <span className="text-xs text-surface-500">{project.completed_tasks || 0}/{project.total_tasks || 0}</span>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );
