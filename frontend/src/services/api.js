@@ -62,4 +62,16 @@ export const dashboardAPI = {
   getStats: () => api.get('/dashboard/stats/'),
 };
 
+export const discussionsAPI = {
+  getByTask: (taskId) => api.get(`/tasks/${taskId}/discussions/`),
+  create: (taskId, content) => api.post(`/tasks/${taskId}/discussions/`, { content }),
+};
+
+export const notificationsAPI = {
+  getAll: (unread) => api.get(`/notifications/${unread ? '?unread=true' : ''}`),
+  markRead: (id) => api.patch(`/notifications/${id}/read/`),
+  markAllRead: () => api.patch(`/notifications/read-all/`),
+  getUnreadCount: () => api.get('/notifications/unread-count/'),
+};
+
 export default api;

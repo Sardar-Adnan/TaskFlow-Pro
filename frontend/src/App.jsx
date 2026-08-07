@@ -19,12 +19,8 @@ import PMTasks from './pages/manager/PMTasks';
 
 import MemberTasks from './pages/member/MemberTasks';
 
-// Placeholder components
-const PlaceholderPage = ({ title }) => (
-  <div className="flex items-center justify-center h-full min-h-[400px]">
-    <h2 className="text-2xl font-semibold text-surface-400">{title} - Coming Soon</h2>
-  </div>
-);
+import NotificationsPage from './pages/shared/NotificationsPage';
+import ProfilePage from './pages/shared/ProfilePage';
 
 const AppRoutes = () => {
   const { user, isAuthenticated, loading } = useAuth();
@@ -61,8 +57,8 @@ const AppRoutes = () => {
       {/* Shared Protected Routes under a separate layout or within dashboards? */}
       {/* We'll use a wrapper route for shared stuff, reusing DashboardLayout if they have a role */}
       <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
-        <Route path="/notifications" element={<PlaceholderPage title="Notifications" />} />
-        <Route path="/profile" element={<PlaceholderPage title="Profile Settings" />} />
+        <Route path="/notifications" element={<NotificationsPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Route>
 
       {/* Root Redirect */}

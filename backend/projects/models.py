@@ -38,3 +38,12 @@ class Task(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='todo')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+class Discussion(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='discussions')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='discussions')
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']

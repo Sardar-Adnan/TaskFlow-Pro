@@ -7,6 +7,7 @@ import App from './App.jsx'
 import './index.css'
 import { AuthProvider } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
+import { NotificationProvider } from './context/NotificationContext'
 
 const queryClient = new QueryClient()
 
@@ -16,8 +17,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
           <AuthProvider>
-            <Toaster position="top-right" />
-            <App />
+            <NotificationProvider>
+              <Toaster position="top-right" />
+              <App />
+            </NotificationProvider>
           </AuthProvider>
         </ThemeProvider>
       </QueryClientProvider>

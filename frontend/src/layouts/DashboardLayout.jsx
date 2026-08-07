@@ -6,6 +6,7 @@ import {
   LayoutDashboard, Users, Briefcase, CheckSquare, 
   Bell, Settings, LogOut, Menu, X, Sun, Moon, Search
 } from 'lucide-react';
+import NotificationDropdown from '../components/NotificationDropdown';
 
 const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -129,10 +130,7 @@ const DashboardLayout = () => {
             >
               {isDark ? <Sun size={20} /> : <Moon size={20} />}
             </button>
-            <button className="p-2 text-surface-500 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-full transition-colors relative">
-              <Bell size={20} />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
+            <NotificationDropdown />
           </div>
         </header>
 

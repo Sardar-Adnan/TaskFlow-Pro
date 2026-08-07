@@ -9,6 +9,7 @@ import StatusBadge from '../../components/StatusBadge';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import EmptyState from '../../components/EmptyState';
+import TaskDiscussion from '../../components/TaskDiscussion';
 
 const ProjectDetail = () => {
   const { id } = useParams();
@@ -23,6 +24,7 @@ const ProjectDetail = () => {
   const [activeTab, setActiveTab] = useState('tasks');
   const [availableUsers, setAvailableUsers] = useState([]);
   const [managers, setManagers] = useState([]);
+  const [expandedTaskId, setExpandedTaskId] = useState(null);
 
   // Modals state
   const [isEditProjectOpen, setIsEditProjectOpen] = useState(false);
@@ -235,13 +237,25 @@ const ProjectDetail = () => {
                     </thead>
                     <tbody className="divide-y divide-surface-200 dark:divide-surface-800">
                       {tasks.map(task => (
-                        <tr key={task.id} className="hover:bg-surface-50 dark:hover:bg-surface-800/50">
-                          <td className="px-4 py-3 font-medium text-surface-900 dark:text-white">{task.title}</td>
-                          <td className="px-4 py-3">{task.assignee_name || 'Unassigned'}</td>
-                          <td className="px-4 py-3"><StatusBadge type="status" value={task.status} /></td>
-                          <td className="px-4 py-3"><StatusBadge type="priority" value={task.priority} /></td>
-                          <td className="px-4 py-3">{new Date(task.due_date).toLocaleDateString()}</td>
-                        </tr>
+                        <React.Fragment key={task.id}>
+                          <tr 
+                            className="hover:bg-surface-50 dark:hover:bg-surface-800/50 cursor-pointer"
+                            onClick={() => setExpandedTaskId(expandedTaskId === task.id ? null : task.id)}
+                          >
+                            <td className="px-4 py-3 font-medium text-surface-900 dark:text-white">{task.title}</td>
+                            <td className="px-4 py-3">{task.assignee_name || 'Unassigned'}</td>
+                            <td className="px-4 py-3"><StatusBadge type="status" value={task.status} /></td>
+                            <td className="px-4 py-3"><StatusBadge type="priority" value={task.priority} /></td>
+                            <td className="px-4 py-3">{new Date(task.due_date).toLocaleDateString()}</td>
+                          </tr>
+                          {expandedTaskId === task.id && (
+                            <tr>
+                              <td colSpan="5" className="px-4 py-4 bg-surface-50 dark:bg-surface-800/20">
+                                <TaskDiscussion taskId={task.id} />
+                              </td>
+                            </tr>
+                          )}
+                        </React.Fragment>
                       ))}
                     </tbody>
                   </table>

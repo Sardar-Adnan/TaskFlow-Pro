@@ -2,10 +2,10 @@ from rest_framework import viewsets, generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
-from .models import Project, ProjectMember, Task
+from .models import Project, ProjectMember, Task, Discussion
 from .serializers import (
     ProjectSerializer, ProjectCreateSerializer, ProjectMemberSerializer,
-    TaskSerializer, TaskCreateSerializer, TaskStatusUpdateSerializer
+    TaskSerializer, TaskCreateSerializer, TaskStatusUpdateSerializer, DiscussionSerializer
 )
 from users.permissions import IsAdmin, IsProjectManager, IsTeamMember, IsAdminOrPM
 from django.contrib.auth import get_user_model
@@ -190,3 +190,24 @@ class DashboardStatsView(APIView):
                 'completed': Task.objects.filter(assignee=user, status='completed').count()
             }
         return Response(stats)
+
+class DiscussionViewSet(viewsets.ModelViewSet):
+    serializer_class = DiscussionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        task_id = self.kwargs.get('task_id')
+        return Discussion.objects.filter(task_id=task_id)
+
+    def perform_create(self, serializer):
+        task = get_object_or_404(Task, id=self.kwargs.get('task_id'))
+        user = self.request.user
+        if user.role == 'admin':
+            pass
+        elif user.role == 'pm':
+            if task.project.manager != user:
+                raise PermissionDenied("Not authorized")
+        else:
+            if task.assignee != user:
+                raise PermissionDenied("Not authorized")
+        serializer.save(task=task, user=self.request.user)

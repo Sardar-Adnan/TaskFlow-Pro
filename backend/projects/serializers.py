@@ -73,3 +73,13 @@ class TaskStatusUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = ['status']
+
+from .models import Discussion
+
+class DiscussionSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    
+    class Meta:
+        model = Discussion
+        fields = ['id', 'user', 'content', 'created_at']
+        read_only_fields = ['id', 'user', 'created_at']
