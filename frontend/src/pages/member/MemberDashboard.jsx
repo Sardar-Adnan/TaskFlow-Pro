@@ -4,8 +4,9 @@ import { useAuth } from '../../context/AuthContext';
 import { dashboardAPI, projectsAPI } from '../../services/api';
 import StatCard from '../../components/StatCard';
 import StatusBadge from '../../components/StatusBadge';
-import { ClipboardList, PlayCircle, Search, CheckCircle, Calendar } from 'lucide-react';
+import { ClipboardList, PlayCircle, Search, CheckCircle, Calendar, PartyPopper } from 'lucide-react';
 import toast from 'react-hot-toast';
+import EmptyState from '../../components/EmptyState';
 
 const MemberDashboard = () => {
   const { user } = useAuth();
@@ -63,9 +64,11 @@ const MemberDashboard = () => {
       <div className="bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800 p-6 min-h-[400px]">
         <h2 className="text-lg font-semibold text-surface-900 dark:text-white mb-4">Upcoming Tasks</h2>
         {upcomingTasks.length === 0 ? (
-          <div className="flex items-center justify-center h-64 text-surface-400 border-2 border-dashed border-surface-200 dark:border-surface-800 rounded-lg">
-            No upcoming tasks assigned to you.
-          </div>
+          <EmptyState 
+            icon={PartyPopper}
+            title="No upcoming tasks"
+            message="No tasks assigned yet. You're all caught up!"
+          />
         ) : (
           <div className="overflow-x-auto border border-surface-200 dark:border-surface-800 rounded-lg">
             <table className="w-full text-left text-sm">

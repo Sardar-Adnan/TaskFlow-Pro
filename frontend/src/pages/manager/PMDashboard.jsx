@@ -6,6 +6,8 @@ import StatCard from '../../components/StatCard';
 import StatusBadge from '../../components/StatusBadge';
 import { Briefcase, ListTodo, Clock, CheckCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
+import ActivityTimeline from '../../components/ActivityTimeline';
+import EmptyState from '../../components/EmptyState';
 
 const PMDashboard = () => {
   const { user } = useAuth();
@@ -52,9 +54,11 @@ const PMDashboard = () => {
       <div className="bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800 p-6 min-h-[400px]">
         <h2 className="text-lg font-semibold text-surface-900 dark:text-white mb-4">My Projects</h2>
         {projects.length === 0 ? (
-          <div className="flex items-center justify-center h-64 text-surface-400 border-2 border-dashed border-surface-200 dark:border-surface-800 rounded-lg">
-            No projects found. You are not assigned to any projects yet.
-          </div>
+          <EmptyState 
+            icon={Briefcase}
+            title="No projects found"
+            message="No projects assigned yet. Contact your admin."
+          />
         ) : (
           <div className="overflow-x-auto border border-surface-200 dark:border-surface-800 rounded-lg">
             <table className="w-full text-left text-sm">
@@ -86,6 +90,10 @@ const PMDashboard = () => {
             </table>
           </div>
         )}
+      </div>
+      <div className="bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800 p-6">
+        <h2 className="text-lg font-semibold text-surface-900 dark:text-white mb-4">Activity Feed</h2>
+        <ActivityTimeline />
       </div>
     </div>
   );

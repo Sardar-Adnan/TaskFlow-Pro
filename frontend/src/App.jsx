@@ -21,6 +21,7 @@ import MemberTasks from './pages/member/MemberTasks';
 
 import NotificationsPage from './pages/shared/NotificationsPage';
 import ProfilePage from './pages/shared/ProfilePage';
+import SearchPage from './pages/shared/SearchPage';
 
 const AppRoutes = () => {
   const { user, isAuthenticated, loading } = useAuth();
@@ -59,6 +60,7 @@ const AppRoutes = () => {
       <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
         <Route path="/notifications" element={<NotificationsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/search" element={<SearchPage />} />
       </Route>
 
       {/* Root Redirect */}

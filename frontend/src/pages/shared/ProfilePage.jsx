@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { authAPI } from '../../services/api';
 import toast from 'react-hot-toast';
-import { Save, User, Mail, Phone, FileText } from 'lucide-react';
+import { Save, User, Mail, Phone, FileText, Key, Eye, EyeOff } from 'lucide-react';
 
 const ProfilePage = () => {
   const { user, login } = useAuth(); // Assuming login context can update user if we re-fetch or just update local
@@ -13,6 +13,14 @@ const ProfilePage = () => {
     phone: '',
     bio: ''
   });
+
+  const [passwordData, setPasswordData] = useState({
+    old_password: '',
+    new_password: '',
+    confirm_password: ''
+  });
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -38,13 +46,43 @@ const ProfilePage = () => {
         phone: formData.phone,
         bio: formData.bio
       });
-      // Update local storage and context if necessary, assuming response.data has updated user
-      // For now just show toast
       toast.success('Profile updated successfully');
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to update profile');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePasswordChange = (e) => {
+    setPasswordData({ ...passwordData, [e.target.name]: e.target.value });
+  };
+
+  const handlePasswordSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (passwordData.new_password !== passwordData.confirm_password) {
+      toast.error('New passwords do not match');
+      return;
+    }
+    
+    if (passwordData.new_password.length < 6) {
+      toast.error('Password must be at least 6 characters');
+      return;
+    }
+
+    setPasswordLoading(true);
+    try {
+      await authAPI.changePassword({
+        old_password: passwordData.old_password,
+        new_password: passwordData.new_password
+      });
+      toast.success('Password changed successfully');
+      setPasswordData({ old_password: '', new_password: '', confirm_password: '' });
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to change password');
+    } finally {
+      setPasswordLoading(false);
     }
   };
 
@@ -166,6 +204,73 @@ const ProfilePage = () => {
                     <Save size={18} />
                   )}
                   Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+
+          {/* Change Password Section */}
+          <div className="bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800 p-6 mt-6">
+            <h3 className="text-lg font-semibold text-surface-900 dark:text-white mb-4 border-b border-surface-200 dark:border-surface-800 pb-2 flex items-center gap-2">
+              <Key size={20} className="text-surface-500" /> Change Password
+            </h3>
+            <form onSubmit={handlePasswordSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">
+                  Current Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    name="old_password"
+                    value={passwordData.old_password}
+                    onChange={handlePasswordChange}
+                    className="w-full px-4 py-2 bg-surface-50 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:outline-none dark:text-white"
+                    required
+                  />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-2.5 text-surface-400">
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">
+                  New Password
+                </label>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  name="new_password"
+                  value={passwordData.new_password}
+                  onChange={handlePasswordChange}
+                  className="w-full px-4 py-2 bg-surface-50 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:outline-none dark:text-white"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">
+                  Confirm New Password
+                </label>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  name="confirm_password"
+                  value={passwordData.confirm_password}
+                  onChange={handlePasswordChange}
+                  className="w-full px-4 py-2 bg-surface-50 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:outline-none dark:text-white"
+                  required
+                />
+              </div>
+              <div className="pt-4 flex justify-end">
+                <button
+                  type="submit"
+                  disabled={passwordLoading}
+                  className="flex items-center gap-2 px-6 py-2 bg-surface-800 dark:bg-surface-100 hover:bg-surface-900 dark:hover:bg-white text-white dark:text-surface-900 rounded-lg transition-colors disabled:opacity-50 font-medium"
+                >
+                  {passwordLoading ? (
+                    <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Key size={18} />
+                  )}
+                  Update Password
                 </button>
               </div>
             </form>

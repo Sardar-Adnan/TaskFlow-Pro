@@ -28,6 +28,7 @@ export const authAPI = {
   login: (email, password) => api.post('/auth/login/', { email, password }),
   getProfile: () => api.get('/auth/me/'),
   updateProfile: (data) => api.put('/auth/me/', data),
+  changePassword: (data) => api.put('/auth/change-password/', data),
 };
 
 export const usersAPI = {
@@ -72,6 +73,10 @@ export const notificationsAPI = {
   markRead: (id) => api.patch(`/notifications/${id}/read/`),
   markAllRead: () => api.patch(`/notifications/read-all/`),
   getUnreadCount: () => api.get('/notifications/unread-count/'),
+};
+
+export const activityAPI = {
+  getAll: (projectId) => api.get(`/activity/${projectId ? '?project_id=' + projectId : ''}`),
 };
 
 export default api;

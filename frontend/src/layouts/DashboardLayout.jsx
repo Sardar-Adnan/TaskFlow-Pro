@@ -13,6 +13,13 @@ const DashboardLayout = () => {
   const { user, logout } = useAuth();
   const { isDark, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = (e) => {
+    if (e.key === 'Enter' && searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   const adminLinks = [
     { to: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
@@ -117,7 +124,10 @@ const DashboardLayout = () => {
               <Search size={20} />
               <input 
                 type="text" 
-                placeholder="Search..." 
+                placeholder="Search projects & tasks..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={handleSearch}
                 className="bg-transparent border-none outline-none text-sm text-surface-900 dark:text-white placeholder-surface-400 w-64"
               />
             </div>

@@ -4,7 +4,8 @@ from .views import (
     RegisterView,
     UserProfileView,
     UserListView,
-    UserDetailView
+    UserDetailView,
+    ChangePasswordView
 )
 
 urlpatterns = [
@@ -13,4 +14,5 @@ urlpatterns = [
     path('auth/me/', UserProfileView.as_view(), name='auth_me'),
     path('users/', UserListView.as_view(), name='user_list'),
     path('users/<int:pk>/', UserDetailView.as_view(), name='user_detail'),
+    path('auth/change-password/', ChangePasswordView.as_view(), name='change_password'),
 ]

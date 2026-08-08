@@ -28,6 +28,7 @@ const ProjectManagement = () => {
     end_date: '',
     manager_id: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -56,6 +57,19 @@ const ProjectManagement = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.name.trim()) {
+      toast.error('Project name is required');
+      return;
+    }
+    if (!formData.start_date || !formData.end_date) {
+      toast.error('Start and end dates are required');
+      return;
+    }
+    if (new Date(formData.start_date) > new Date(formData.end_date)) {
+      toast.error('Start date must be before end date');
+      return;
+    }
+    setIsSubmitting(true);
     try {
       await projectsAPI.create(formData);
       toast.success('Project created successfully');
@@ -63,6 +77,8 @@ const ProjectManagement = () => {
       fetchData();
     } catch (err) {
       toast.error('Failed to create project');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -251,7 +267,9 @@ const ProjectManagement = () => {
           </div>
           <div className="flex justify-end gap-3 pt-4">
             <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-700 dark:text-surface-300 hover:bg-surface-50 dark:hover:bg-surface-800">Cancel</button>
-            <button type="submit" className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg">Create Project</button>
+            <button type="submit" disabled={isSubmitting} className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg disabled:opacity-50">
+              {isSubmitting ? 'Creating...' : 'Create Project'}
+            </button>
           </div>
         </form>
       </Modal>

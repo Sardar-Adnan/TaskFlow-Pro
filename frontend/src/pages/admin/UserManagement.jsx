@@ -24,8 +24,10 @@ const UserManagement = () => {
     username: '',
     email: '',
     password: '',
+    confirm_password: '',
     role: 'member'
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchUsers = async () => {
     try {
@@ -50,6 +52,26 @@ const UserManagement = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+
+    if (!isEditMode) {
+      if (formData.password.length < 6) {
+        toast.error('Password must be at least 6 characters');
+        return;
+      }
+      if (formData.password !== formData.confirm_password) {
+        toast.error('Passwords do not match');
+        return;
+      }
+    }
+
+    setIsSubmitting(true);
     try {
       if (isEditMode) {
         await usersAPI.update(selectedUser.id, {
@@ -59,20 +81,24 @@ const UserManagement = () => {
         });
         toast.success('User updated successfully');
       } else {
-        await usersAPI.create(formData);
+        const payload = { ...formData };
+        delete payload.confirm_password;
+        await usersAPI.create(payload);
         toast.success('User created successfully');
       }
       setIsModalOpen(false);
       fetchUsers();
     } catch (err) {
       toast.error(err.response?.data?.detail || 'An error occurred');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const openCreateModal = () => {
     setIsEditMode(false);
     setSelectedUser(null);
-    setFormData({ username: '', email: '', password: '', role: 'member' });
+    setFormData({ username: '', email: '', password: '', confirm_password: '', role: 'member' });
     setIsModalOpen(true);
   };
 
@@ -219,17 +245,30 @@ const UserManagement = () => {
             />
           </div>
           {!isEditMode && (
-            <div>
-              <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">Password</label>
-              <input
-                type="password"
-                name="password"
-                required
-                value={formData.password}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-surface-200 dark:border-surface-700 rounded-lg bg-surface-50 dark:bg-surface-800 focus:ring-2 focus:ring-primary-500 outline-none text-surface-900 dark:text-white"
-              />
-            </div>
+            <>
+              <div>
+                <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  required
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-surface-200 dark:border-surface-700 rounded-lg bg-surface-50 dark:bg-surface-800 focus:ring-2 focus:ring-primary-500 outline-none text-surface-900 dark:text-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">Confirm Password</label>
+                <input
+                  type="password"
+                  name="confirm_password"
+                  required
+                  value={formData.confirm_password}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-surface-200 dark:border-surface-700 rounded-lg bg-surface-50 dark:bg-surface-800 focus:ring-2 focus:ring-primary-500 outline-none text-surface-900 dark:text-white"
+                />
+              </div>
+            </>
           )}
           <div>
             <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">Role</label>
@@ -254,9 +293,10 @@ const UserManagement = () => {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
+              disabled={isSubmitting}
+              className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors disabled:opacity-50"
             >
-              {isEditMode ? 'Save Changes' : 'Create User'}
+              {isSubmitting ? 'Saving...' : (isEditMode ? 'Save Changes' : 'Create User')}
             </button>
           </div>
         </form>

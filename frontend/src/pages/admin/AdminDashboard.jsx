@@ -4,8 +4,10 @@ import { useAuth } from '../../context/AuthContext';
 import { dashboardAPI, projectsAPI } from '../../services/api';
 import StatCard from '../../components/StatCard';
 import StatusBadge from '../../components/StatusBadge';
-import { Users, Briefcase, Activity, CheckCircle } from 'lucide-react';
+import { Users, Briefcase, Activity, CheckCircle, PlusCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
+import ActivityTimeline from '../../components/ActivityTimeline';
+import EmptyState from '../../components/EmptyState';
 
 const AdminDashboard = () => {
   const { user } = useAuth();
@@ -55,9 +57,12 @@ const AdminDashboard = () => {
       <div className="bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800 p-6 min-h-[400px]">
         <h2 className="text-lg font-semibold text-surface-900 dark:text-white mb-4">Recent Projects</h2>
         {recentProjects.length === 0 ? (
-          <div className="flex items-center justify-center h-64 text-surface-400 border-2 border-dashed border-surface-200 dark:border-surface-800 rounded-lg">
-            No recent projects to display.
-          </div>
+          <EmptyState 
+            icon={PlusCircle}
+            title="No projects found"
+            message="Get started by creating your first project!"
+            action={{ label: "Create Project", onClick: () => navigate('/admin/projects') }}
+          />
         ) : (
           <div className="overflow-x-auto border border-surface-200 dark:border-surface-800 rounded-lg">
             <table className="w-full text-left text-sm">
@@ -89,6 +94,10 @@ const AdminDashboard = () => {
             </table>
           </div>
         )}
+      </div>
+      <div className="bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800 p-6">
+        <h2 className="text-lg font-semibold text-surface-900 dark:text-white mb-4">Activity Feed</h2>
+        <ActivityTimeline />
       </div>
     </div>
   );

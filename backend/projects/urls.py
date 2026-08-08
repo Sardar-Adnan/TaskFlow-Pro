@@ -2,7 +2,8 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
     ProjectViewSet, ProjectMemberViewSet, TaskViewSet,
-    TaskStatusUpdateView, TaskDetailView, DashboardStatsView, DiscussionViewSet
+    TaskStatusUpdateView, TaskDetailView, DashboardStatsView, DiscussionViewSet,
+    ActivityLogView
 )
 
 router = DefaultRouter()
@@ -27,4 +28,5 @@ urlpatterns = [
     path('tasks/<int:task_id>/discussions/', DiscussionViewSet.as_view({'get': 'list', 'post': 'create'}), name='task-discussions'),
     
     path('dashboard/stats/', DashboardStatsView.as_view(), name='dashboard-stats'),
+    path('activity/', ActivityLogView.as_view(), name='activity-log'),
 ]

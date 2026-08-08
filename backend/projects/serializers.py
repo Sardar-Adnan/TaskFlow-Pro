@@ -1,9 +1,16 @@
 from rest_framework import serializers
-from .models import Project, ProjectMember, Task
+from .models import Project, ProjectMember, Task, ActivityLog
 from django.contrib.auth import get_user_model
 from users.serializers import UserSerializer
 
 User = get_user_model()
+
+class ActivityLogSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    class Meta:
+        model = ActivityLog
+        fields = ['id', 'user', 'action', 'target_type', 'target_name', 'project', 'details', 'created_at']
+
 
 class ProjectSerializer(serializers.ModelSerializer):
     manager = UserSerializer(read_only=True)

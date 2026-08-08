@@ -10,6 +10,7 @@ import LoadingSpinner from '../../components/LoadingSpinner';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import EmptyState from '../../components/EmptyState';
 import TaskDiscussion from '../../components/TaskDiscussion';
+import ActivityTimeline from '../../components/ActivityTimeline';
 
 const ProjectDetail = () => {
   const { id } = useParams();
@@ -37,6 +38,7 @@ const ProjectDetail = () => {
   const [taskForm, setTaskForm] = useState({
     title: '', description: '', status: 'todo', priority: 'medium', due_date: '', assigned_to_id: ''
   });
+  const [isTaskSubmitting, setIsTaskSubmitting] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -109,6 +111,11 @@ const ProjectDetail = () => {
 
   const handleTaskSubmit = async (e) => {
     e.preventDefault();
+    if (!taskForm.title.trim()) {
+      toast.error('Task title is required');
+      return;
+    }
+    setIsTaskSubmitting(true);
     try {
       await projectsAPI.createTask(id, taskForm);
       toast.success('Task created');
@@ -116,6 +123,8 @@ const ProjectDetail = () => {
       fetchData();
     } catch (err) {
       toast.error('Failed to create task');
+    } finally {
+      setIsTaskSubmitting(false);
     }
   };
 
@@ -206,6 +215,12 @@ const ProjectDetail = () => {
             className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${activeTab === 'team' ? 'border-primary-600 text-primary-600 dark:text-primary-400' : 'border-transparent text-surface-500 hover:text-surface-700 dark:text-surface-400 dark:hover:text-surface-300'}`}
           >
             Team Members ({members.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('activity')}
+            className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${activeTab === 'activity' ? 'border-primary-600 text-primary-600 dark:text-primary-400' : 'border-transparent text-surface-500 hover:text-surface-700 dark:text-surface-400 dark:hover:text-surface-300'}`}
+          >
+            Activity
           </button>
         </div>
 
@@ -299,6 +314,13 @@ const ProjectDetail = () => {
                   ))}
                 </div>
               )}
+            </div>
+          )}
+
+          {activeTab === 'activity' && (
+            <div>
+              <h3 className="text-lg font-semibold text-surface-900 dark:text-white mb-6">Project Activity</h3>
+              <ActivityTimeline projectId={id} />
             </div>
           )}
         </div>
@@ -409,7 +431,9 @@ const ProjectDetail = () => {
           </div>
           <div className="flex justify-end gap-3 pt-4">
             <button type="button" onClick={() => setIsTaskModalOpen(false)} className="px-4 py-2 border rounded-lg">Cancel</button>
-            <button type="submit" className="px-4 py-2 bg-primary-600 text-white rounded-lg">Create Task</button>
+            <button type="submit" disabled={isTaskSubmitting} className="px-4 py-2 bg-primary-600 text-white rounded-lg disabled:opacity-50">
+              {isTaskSubmitting ? 'Creating...' : 'Create Task'}
+            </button>
           </div>
         </form>
       </Modal>

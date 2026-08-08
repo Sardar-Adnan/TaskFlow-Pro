@@ -58,10 +58,10 @@ const PMTasks = () => {
       {loading ? (
         <div className="flex-1 flex items-center justify-center"><LoadingSpinner /></div>
       ) : (
-        <div className="flex-1 overflow-x-auto overflow-y-hidden">
-          <div className="flex h-full gap-6 min-w-max pb-4">
+        <div className="flex-1 overflow-x-auto overflow-y-auto md:overflow-y-hidden">
+          <div className="flex flex-col md:flex-row h-full gap-6 pb-4 md:min-w-max">
             {columns.map(col => (
-              <div key={col.id} className="w-80 flex flex-col bg-surface-50 dark:bg-surface-800/50 rounded-xl border border-surface-200 dark:border-surface-800 p-4 h-full">
+              <div key={col.id} className="w-full md:w-80 flex flex-col bg-surface-50 dark:bg-surface-800/50 rounded-xl border border-surface-200 dark:border-surface-800 p-4 h-[500px] md:h-full shrink-0">
                 <div className="flex justify-between items-center mb-4 shrink-0">
                   <h3 className="font-semibold text-surface-900 dark:text-white flex items-center gap-2">
                     <span className={`w-2 h-2 rounded-full ${col.id === 'todo' ? 'bg-surface-400' : col.id === 'in_progress' ? 'bg-blue-500' : col.id === 'review' ? 'bg-yellow-500' : 'bg-green-500'}`}></span>
