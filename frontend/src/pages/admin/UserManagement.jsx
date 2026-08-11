@@ -21,7 +21,7 @@ const UserManagement = () => {
   const [userToDelete, setUserToDelete] = useState(null);
 
   const [formData, setFormData] = useState({
-    username: '',
+    name: '',
     email: '',
     password: '',
     confirm_password: '',
@@ -75,7 +75,7 @@ const UserManagement = () => {
     try {
       if (isEditMode) {
         await usersAPI.update(selectedUser.id, {
-          username: formData.username,
+          name: formData.name,
           email: formData.email,
           role: formData.role
         });
@@ -98,7 +98,7 @@ const UserManagement = () => {
   const openCreateModal = () => {
     setIsEditMode(false);
     setSelectedUser(null);
-    setFormData({ username: '', email: '', password: '', confirm_password: '', role: 'member' });
+    setFormData({ name: '', email: '', password: '', confirm_password: '', role: 'member' });
     setIsModalOpen(true);
   };
 
@@ -106,7 +106,7 @@ const UserManagement = () => {
     setIsEditMode(true);
     setSelectedUser(user);
     setFormData({
-      username: user.username,
+      name: user.name || '',
       email: user.email,
       password: '',
       role: user.role
@@ -130,7 +130,7 @@ const UserManagement = () => {
   };
 
   const filteredUsers = users.filter(u => 
-    u.username.toLowerCase().includes(search.toLowerCase()) || 
+    (u.name || u.email || '').toLowerCase().includes(search.toLowerCase()) || 
     u.email.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -186,7 +186,7 @@ const UserManagement = () => {
               <tbody className="divide-y divide-surface-200 dark:divide-surface-800">
                 {filteredUsers.map((user) => (
                   <tr key={user.id} className="hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-colors">
-                    <td className="px-6 py-4 font-medium text-surface-900 dark:text-white">{user.username}</td>
+                    <td className="px-6 py-4 font-medium text-surface-900 dark:text-white">{user.name || user.email}</td>
                     <td className="px-6 py-4">{user.email}</td>
                     <td className="px-6 py-4">
                       <StatusBadge type="role" value={user.role} />
@@ -226,9 +226,9 @@ const UserManagement = () => {
             <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">Name</label>
             <input
               type="text"
-              name="username"
+              name="name"
               required
-              value={formData.username}
+              value={formData.name}
               onChange={handleInputChange}
               className="w-full px-3 py-2 border border-surface-200 dark:border-surface-700 rounded-lg bg-surface-50 dark:bg-surface-800 focus:ring-2 focus:ring-primary-500 outline-none text-surface-900 dark:text-white"
             />
@@ -307,7 +307,7 @@ const UserManagement = () => {
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDelete}
         title="Delete User"
-        message={`Are you sure you want to delete ${userToDelete?.username}? This action cannot be undone.`}
+        message={`Are you sure you want to delete ${userToDelete?.name || userToDelete?.email}? This action cannot be undone.`}
         confirmText="Delete"
         confirmColor="bg-red-600 hover:bg-red-700"
       />
