@@ -11,8 +11,19 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 import os
+import sys
 import dj_database_url
 from pathlib import Path
+
+# Mock psycopg2 using pure-python pg8000 for Vercel serverless compatibility
+try:
+    import psycopg2
+except ImportError:
+    try:
+        import pg8000.psycopg2
+        sys.modules['psycopg2'] = pg8000.psycopg2
+    except ImportError:
+        pass
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
