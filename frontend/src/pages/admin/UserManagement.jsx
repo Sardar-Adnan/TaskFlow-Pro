@@ -81,15 +81,28 @@ const UserManagement = () => {
         });
         toast.success('User updated successfully');
       } else {
-        const payload = { ...formData };
-        delete payload.confirm_password;
+        const payload = {
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          password_confirm: formData.confirm_password,
+          role: formData.role
+        };
         await usersAPI.create(payload);
         toast.success('User created successfully');
       }
       setIsModalOpen(false);
       fetchUsers();
     } catch (err) {
-      toast.error(err.response?.data?.detail || 'An error occurred');
+      const errData = err.response?.data;
+      if (errData && typeof errData === 'object') {
+        const messages = Object.entries(errData)
+          .map(([key, val]) => `${key}: ${Array.isArray(val) ? val.join(' ') : val}`)
+          .join(' | ');
+        toast.error(messages || 'Failed to create user');
+      } else {
+        toast.error(errData?.detail || 'An error occurred');
+      }
     } finally {
       setIsSubmitting(false);
     }
