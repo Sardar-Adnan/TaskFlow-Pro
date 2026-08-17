@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { tasksAPI, dashboardAPI } from '../../services/api';
+import { tasksAPI, projectsAPI } from '../../services/api';
 import toast from 'react-hot-toast';
 import { CheckSquare, Filter, Calendar } from 'lucide-react';
 import StatusBadge from '../../components/StatusBadge';
@@ -23,9 +23,6 @@ const MemberTasks = () => {
       // Or maybe there is an endpoint not explicitly mentioned. 
       // Actually, if we look at `projectsAPI.getAll()`, maybe it returns projects the member is part of.
       // Let's do the same as PMTasks: fetch projects, then fetch tasks, then filter for the member's tasks.
-      const { projectsAPI } = require('../../services/api');
-      const { useAuth } = require('../../context/AuthContext');
-      
       const projRes = await projectsAPI.getAll();
       let allTasks = [];
       for (let p of projRes.data) {

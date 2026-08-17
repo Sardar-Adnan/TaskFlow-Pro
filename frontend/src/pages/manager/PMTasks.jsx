@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { dashboardAPI, tasksAPI } from '../../services/api';
+import { projectsAPI, tasksAPI } from '../../services/api';
 import toast from 'react-hot-toast';
 import { Calendar, Clock, CheckCircle } from 'lucide-react';
 import StatusBadge from '../../components/StatusBadge';
@@ -21,7 +21,6 @@ const PMTasks = () => {
         // The API instructions don't give a "get all tasks for PM" endpoint, so we'll fetch stats or projects
         // wait, we can just fetch projects, then fetch tasks for each project.
         // Actually, we don't have projectsAPI imported here yet. Let's import it.
-        const { projectsAPI } = require('../../services/api');
         const projRes = await projectsAPI.getAll();
         const projs = projRes.data;
         

@@ -406,7 +406,7 @@ const ProjectDetail = () => {
               <label className="block text-sm font-medium mb-1">Assign To</label>
               <select value={taskForm.assigned_to_id} onChange={e => setTaskForm({...taskForm, assigned_to_id: e.target.value})} className="w-full px-3 py-2 border rounded-lg bg-surface-50 dark:bg-surface-800 dark:border-surface-700">
                 <option value="">Unassigned</option>
-                {members.map(m => <option key={m.user.id} value={m.user.id}>{m.user.username}</option>)}
+                {members.map(m => <option key={m.user.id} value={m.user.id}>{m.user.name || m.user.email}</option>)}
               </select>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { notificationsAPI } from '../services/api';
 import toast from 'react-hot-toast';
 import { useAuth } from './AuthContext';
@@ -15,7 +15,7 @@ export const NotificationProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const { isAuthenticated } = useAuth();
 
-  const fetchUnreadCount = async () => {
+  const fetchUnreadCount = useCallback(async () => {
     if (!isAuthenticated) return;
     try {
       const response = await notificationsAPI.getUnreadCount();
@@ -23,9 +23,9 @@ export const NotificationProvider = ({ children }) => {
     } catch (error) {
       console.error('Failed to fetch unread count', error);
     }
-  };
+  }, [isAuthenticated]);
 
-  const fetchNotifications = async (unreadOnly = false) => {
+  const fetchNotifications = useCallback(async (unreadOnly = false) => {
     if (!isAuthenticated) return;
     try {
       setLoading(true);
@@ -39,30 +39,30 @@ export const NotificationProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [isAuthenticated, fetchUnreadCount]);
 
-  const markAsRead = async (id) => {
+  const markAsRead = useCallback(async (id) => {
     try {
       await notificationsAPI.markRead(id);
-      setNotifications(notifications.map(n => 
+      setNotifications(prev => prev.map(n => 
         n.id === id ? { ...n, is_read: true } : n
       ));
       setUnreadCount(prev => Math.max(0, prev - 1));
     } catch (error) {
       toast.error('Failed to mark notification as read');
     }
-  };
+  }, []);
 
-  const markAllAsRead = async () => {
+  const markAllAsRead = useCallback(async () => {
     try {
       await notificationsAPI.markAllRead();
-      setNotifications(notifications.map(n => ({ ...n, is_read: true })));
+      setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
       setUnreadCount(0);
       toast.success('All notifications marked as read');
     } catch (error) {
       toast.error('Failed to mark all as read');
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -71,7 +71,7 @@ export const NotificationProvider = ({ children }) => {
       const interval = setInterval(fetchUnreadCount, 30000);
       return () => clearInterval(interval);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, fetchUnreadCount]);
 
   const value = {
     notifications,
