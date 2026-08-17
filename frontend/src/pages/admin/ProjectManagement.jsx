@@ -183,7 +183,7 @@ const ProjectManagement = () => {
                 <div className="flex items-center justify-between text-sm text-surface-600 dark:text-surface-300">
                   <div className="flex items-center gap-1.5">
                     <UsersIcon className="h-4 w-4 text-surface-400" />
-                    <span>Manager: {project.manager_name || 'Unassigned'}</span>
+                    <span>Manager: {project.manager?.name || 'Unassigned'}</span>
                   </div>
                 </div>
                 

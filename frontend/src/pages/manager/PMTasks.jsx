@@ -85,9 +85,9 @@ const PMTasks = () => {
                           <Calendar className="h-3 w-3" />
                           <span>{new Date(task.due_date).toLocaleDateString()}</span>
                         </div>
-                        {task.assignee_name && (
-                          <div className="h-6 w-6 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-xs font-bold" title={task.assignee_name}>
-                            {task.assignee_name.charAt(0).toUpperCase()}
+                        {task.assignee?.name && (
+                          <div className="h-6 w-6 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-xs font-bold" title={task.assignee.name}>
+                            {task.assignee.name.charAt(0).toUpperCase()}
                           </div>
                         )}
                       </div>

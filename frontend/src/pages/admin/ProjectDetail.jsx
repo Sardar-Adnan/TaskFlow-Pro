@@ -136,7 +136,7 @@ const ProjectDetail = () => {
       priority: project.priority,
       start_date: project.start_date,
       end_date: project.end_date,
-      manager_id: project.manager || project.manager_id
+      manager_id: project.manager?.id || ''
     });
     setIsEditProjectOpen(true);
   };
@@ -153,7 +153,7 @@ const ProjectDetail = () => {
 
   const isAdmin = user?.role === 'admin';
   const isPM = user?.role === 'pm';
-  const canEditProject = isAdmin || (isPM && project.manager_id === user.id);
+  const canEditProject = isAdmin || (isPM && project.manager?.id === user.id);
 
   return (
     <div className="space-y-6">
@@ -185,7 +185,7 @@ const ProjectDetail = () => {
                 <div className="p-2 bg-primary-50 dark:bg-primary-900/20 text-primary-600 rounded-lg"><User className="h-5 w-5" /></div>
                 <div>
                   <p className="text-sm text-surface-500 dark:text-surface-400">Project Manager</p>
-                  <p className="font-medium text-surface-900 dark:text-white">{project.manager_name || 'Unassigned'}</p>
+                  <p className="font-medium text-surface-900 dark:text-white">{project.manager?.name || 'Unassigned'}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -258,7 +258,7 @@ const ProjectDetail = () => {
                             onClick={() => setExpandedTaskId(expandedTaskId === task.id ? null : task.id)}
                           >
                             <td className="px-4 py-3 font-medium text-surface-900 dark:text-white">{task.title}</td>
-                            <td className="px-4 py-3">{task.assignee_name || 'Unassigned'}</td>
+                            <td className="px-4 py-3">{task.assignee?.name || 'Unassigned'}</td>
                             <td className="px-4 py-3"><StatusBadge type="status" value={task.status} /></td>
                             <td className="px-4 py-3"><StatusBadge type="priority" value={task.priority} /></td>
                             <td className="px-4 py-3">{new Date(task.due_date).toLocaleDateString()}</td>

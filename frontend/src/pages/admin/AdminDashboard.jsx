@@ -78,7 +78,7 @@ const AdminDashboard = () => {
                 {recentProjects.map((project) => (
                   <tr key={project.id} onClick={() => navigate(`/admin/projects/${project.id}`)} className="cursor-pointer hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-colors">
                     <td className="px-4 py-3 font-medium text-surface-900 dark:text-white">{project.name}</td>
-                    <td className="px-4 py-3">{project.manager_name || 'Unassigned'}</td>
+                    <td className="px-4 py-3">{project.manager?.name || 'Unassigned'}</td>
                     <td className="px-4 py-3"><StatusBadge type="status" value={project.status} /></td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
