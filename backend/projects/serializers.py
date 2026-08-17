@@ -28,11 +28,12 @@ class ProjectSerializer(serializers.ModelSerializer):
         return obj.tasks.count()
 
 class ProjectCreateSerializer(serializers.ModelSerializer):
-    manager = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False)
+    manager = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
+    manager_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='manager', required=False, allow_null=True, write_only=True)
 
     class Meta:
         model = Project
-        fields = ['name', 'description', 'start_date', 'end_date', 'priority', 'status', 'manager']
+        fields = ['name', 'description', 'start_date', 'end_date', 'priority', 'status', 'manager', 'manager_id']
 
     def validate(self, data):
         if 'start_date' in data and 'end_date' in data:

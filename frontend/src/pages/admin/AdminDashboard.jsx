@@ -45,7 +45,7 @@ const AdminDashboard = () => {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-surface-900 dark:text-white">Admin Dashboard</h1>
-        <p className="text-surface-500 dark:text-surface-400">Welcome back, {user?.username || user?.name}</p>
+        <p className="text-surface-500 dark:text-surface-400">Welcome back, {user?.name || user?.email}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

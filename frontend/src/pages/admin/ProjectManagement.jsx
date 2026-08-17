@@ -262,7 +262,7 @@ const ProjectManagement = () => {
             <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">Project Manager</label>
             <select name="manager_id" required value={formData.manager_id} onChange={handleInputChange} className="w-full px-3 py-2 border border-surface-200 dark:border-surface-700 rounded-lg bg-surface-50 dark:bg-surface-800 focus:ring-2 focus:ring-primary-500 outline-none">
               <option value="">Select a Manager</option>
-              {managers.map(m => <option key={m.id} value={m.id}>{m.username}</option>)}
+              {managers.map(m => <option key={m.id} value={m.id}>{m.name || m.email}</option>)}
             </select>
           </div>
           <div className="flex justify-end gap-3 pt-4">

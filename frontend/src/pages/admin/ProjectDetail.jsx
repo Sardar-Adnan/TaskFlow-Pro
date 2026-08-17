@@ -298,10 +298,10 @@ const ProjectDetail = () => {
                     <div key={member.id} className="flex items-center justify-between p-4 border border-surface-200 dark:border-surface-700 rounded-lg bg-surface-50 dark:bg-surface-800/50">
                       <div className="flex items-center gap-3">
                         <div className="h-10 w-10 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold">
-                          {member.user.username.charAt(0).toUpperCase()}
+                          {(member.user.name || member.user.email || 'U').charAt(0).toUpperCase()}
                         </div>
                         <div>
-                          <p className="font-medium text-surface-900 dark:text-white">{member.user.username}</p>
+                          <p className="font-medium text-surface-900 dark:text-white">{member.user.name || member.user.email}</p>
                           <p className="text-xs text-surface-500">{member.role || 'Member'}</p>
                         </div>
                       </div>
@@ -360,7 +360,7 @@ const ProjectDetail = () => {
               <label className="block text-sm font-medium mb-1">Manager</label>
               <select value={projectForm.manager_id || ''} onChange={e => setProjectForm({...projectForm, manager_id: e.target.value})} className="w-full px-3 py-2 border rounded-lg bg-surface-50 dark:bg-surface-800 dark:border-surface-700">
                 <option value="">Select Manager</option>
-                {managers.map(m => <option key={m.id} value={m.id}>{m.username}</option>)}
+                {managers.map(m => <option key={m.id} value={m.id}>{m.name || m.email}</option>)}
               </select>
             </div>
           )}
@@ -377,7 +377,7 @@ const ProjectDetail = () => {
             <label className="block text-sm font-medium mb-1">Select User</label>
             <select value={memberToAdd} onChange={e => setMemberToAdd(e.target.value)} required className="w-full px-3 py-2 border rounded-lg bg-surface-50 dark:bg-surface-800 dark:border-surface-700">
               <option value="">Choose a member...</option>
-              {availableUsers.map(u => <option key={u.id} value={u.id}>{u.username} ({u.email})</option>)}
+              {availableUsers.map(u => <option key={u.id} value={u.id}>{u.name || u.email} ({u.email})</option>)}
             </select>
           </div>
           <div className="flex justify-end gap-3 pt-4">
